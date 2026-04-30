@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net481</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>SnakeTimeKiller.Demo</RootNamespace>
+    <AssemblyName>SnakeTimeKiller.Demo</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SnakeTimeKiller\SnakeTimeKiller.csproj" />
+  </ItemGroup>
+</Project>

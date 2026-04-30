@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>SnakeTimeKiller</RootNamespace>
+    <AssemblyName>SnakeTimeKiller</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+</Project>
