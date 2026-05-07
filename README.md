@@ -29,6 +29,9 @@ Add a reference to `SnakeTimeKiller.dll`, then place the control in XAML:
 ```
 
 Image properties are optional. When they are not set, the control uses brush-based fallback visuals.
+The bundled assets from `assets/` are embedded into the DLL and used by default for the cell background, snake head directions, snake body directions, and cargo images. `Backgrownd.png` is rendered once per grid cell. You can override the tiled cell image with `CellBackgroundImage`, and directional snake sprites with `SnakeHead*Image` / `SnakeBody*Image` properties.
+
+Snake sprites are centered on logical cells and can be larger than the cell so adjacent segments visually touch. Tune this with `SnakeVisualScale`, `HorizontalSegmentOverlap`, `VerticalSegmentOverlap`, and `CargoVisualScale`.
 
 ## Build And Test
 

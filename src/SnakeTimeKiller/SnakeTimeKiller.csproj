@@ -6,4 +6,18 @@
     <AssemblyName>SnakeTimeKiller</AssemblyName>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\Apple 1.png" LogicalName="SnakeTimeKiller.Assets.Apple1.png" />
+    <EmbeddedResource Include="..\..\assets\Apple 2.png" LogicalName="SnakeTimeKiller.Assets.Apple2.png" />
+    <EmbeddedResource Include="..\..\assets\Backgrownd.png" LogicalName="SnakeTimeKiller.Assets.Backgrownd.png" />
+    <EmbeddedResource Include="..\..\assets\Body (down).png" LogicalName="SnakeTimeKiller.Assets.BodyDown.png" />
+    <EmbeddedResource Include="..\..\assets\Body (left).png" LogicalName="SnakeTimeKiller.Assets.BodyLeft.png" />
+    <EmbeddedResource Include="..\..\assets\Body (reight).png" LogicalName="SnakeTimeKiller.Assets.BodyRight.png" />
+    <EmbeddedResource Include="..\..\assets\Body (up).png" LogicalName="SnakeTimeKiller.Assets.BodyUp.png" />
+    <EmbeddedResource Include="..\..\assets\Head (down).png" LogicalName="SnakeTimeKiller.Assets.HeadDown.png" />
+    <EmbeddedResource Include="..\..\assets\Head (left).png" LogicalName="SnakeTimeKiller.Assets.HeadLeft.png" />
+    <EmbeddedResource Include="..\..\assets\Head (reight).png" LogicalName="SnakeTimeKiller.Assets.HeadRight.png" />
+    <EmbeddedResource Include="..\..\assets\Head (up).png" LogicalName="SnakeTimeKiller.Assets.HeadUp.png" />
+  </ItemGroup>
 </Project>

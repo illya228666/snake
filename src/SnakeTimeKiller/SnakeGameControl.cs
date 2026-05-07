@@ -15,6 +15,10 @@ namespace SnakeTimeKiller
     {
         private const int MinimumGridSize = 6;
         private const int MaximumGridSize = 200;
+        private const int BoardLayer = 0;
+        private const int SnakeDepthLayer = 1000;
+        private const int CargoDepthLayer = 1000;
+        private const int PopDepthLayerOffset = 40;
 
         private static readonly Brush DefaultBoardBackgroundBrush = CreateFrozenBrush("#0F172A");
         private static readonly Brush DefaultGridLineBrush = CreateFrozenBrush("#1E293B");
@@ -25,6 +29,18 @@ namespace SnakeTimeKiller
         private static readonly Brush DefaultHighCargoBrush = CreateFrozenBrush("#FB7185");
         private static readonly Brush DefaultOverlayBrush = CreateFrozenBrush("#CC020617");
         private static readonly Brush DefaultOverlayTextBrush = CreateFrozenBrush("#F8FAFC");
+        private static readonly ImageSource DefaultCellBackgroundImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.Backgrownd.png");
+        private static readonly ImageSource DefaultHeadUpImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.HeadUp.png");
+        private static readonly ImageSource DefaultHeadRightImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.HeadRight.png");
+        private static readonly ImageSource DefaultHeadDownImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.HeadDown.png");
+        private static readonly ImageSource DefaultHeadLeftImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.HeadLeft.png");
+        private static readonly ImageSource DefaultBodyUpImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.BodyUp.png");
+        private static readonly ImageSource DefaultBodyRightImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.BodyRight.png");
+        private static readonly ImageSource DefaultBodyDownImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.BodyDown.png");
+        private static readonly ImageSource DefaultBodyLeftImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.BodyLeft.png");
+        private static readonly ImageSource DefaultCargoLowImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.Apple1.png");
+        private static readonly ImageSource DefaultCargoMediumImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.Apple2.png");
+        private static readonly ImageSource DefaultCargoHighImage = LoadEmbeddedImage("SnakeTimeKiller.Assets.Apple2.png");
 
         private readonly Grid _root;
         private readonly Canvas _boardCanvas;
@@ -75,9 +91,65 @@ namespace SnakeTimeKiller
                 typeof(SnakeGameControl),
                 new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
 
+        public static readonly DependencyProperty SnakeHeadUpImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeHeadUpImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeHeadRightImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeHeadRightImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeHeadDownImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeHeadDownImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeHeadLeftImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeHeadLeftImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
         public static readonly DependencyProperty SnakeBodyImageProperty =
             DependencyProperty.Register(
                 nameof(SnakeBodyImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeBodyUpImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeBodyUpImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeBodyRightImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeBodyRightImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeBodyDownImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeBodyDownImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeBodyLeftImageProperty =
+            DependencyProperty.Register(
+                nameof(SnakeBodyLeftImage),
                 typeof(ImageSource),
                 typeof(SnakeGameControl),
                 new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
@@ -145,12 +217,47 @@ namespace SnakeTimeKiller
                 typeof(SnakeGameControl),
                 new FrameworkPropertyMetadata(DefaultBoardBackgroundBrush, OnVisualAssetsChanged));
 
+        public static readonly DependencyProperty CellBackgroundImageProperty =
+            DependencyProperty.Register(
+                nameof(CellBackgroundImage),
+                typeof(ImageSource),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(null, OnVisualAssetsChanged));
+
         public static readonly DependencyProperty GridLineBrushProperty =
             DependencyProperty.Register(
                 nameof(GridLineBrush),
                 typeof(Brush),
                 typeof(SnakeGameControl),
                 new FrameworkPropertyMetadata(DefaultGridLineBrush, OnVisualAssetsChanged));
+
+        public static readonly DependencyProperty SnakeVisualScaleProperty =
+            DependencyProperty.Register(
+                nameof(SnakeVisualScale),
+                typeof(double),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(1.0, OnVisualAssetsChanged, CoercePositiveScale));
+
+        public static readonly DependencyProperty HorizontalSegmentOverlapProperty =
+            DependencyProperty.Register(
+                nameof(HorizontalSegmentOverlap),
+                typeof(double),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(0.12, OnVisualAssetsChanged, CoerceOverlap));
+
+        public static readonly DependencyProperty VerticalSegmentOverlapProperty =
+            DependencyProperty.Register(
+                nameof(VerticalSegmentOverlap),
+                typeof(double),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(0.32, OnVisualAssetsChanged, CoerceOverlap));
+
+        public static readonly DependencyProperty CargoVisualScaleProperty =
+            DependencyProperty.Register(
+                nameof(CargoVisualScale),
+                typeof(double),
+                typeof(SnakeGameControl),
+                new FrameworkPropertyMetadata(1.05, OnVisualAssetsChanged, CoercePositiveScale));
 
         public static readonly DependencyProperty LowCargoScoreProperty =
             DependencyProperty.Register(
@@ -298,10 +405,58 @@ namespace SnakeTimeKiller
             set => SetValue(SnakeHeadImageProperty, value);
         }
 
+        public ImageSource SnakeHeadUpImage
+        {
+            get => (ImageSource)GetValue(SnakeHeadUpImageProperty);
+            set => SetValue(SnakeHeadUpImageProperty, value);
+        }
+
+        public ImageSource SnakeHeadRightImage
+        {
+            get => (ImageSource)GetValue(SnakeHeadRightImageProperty);
+            set => SetValue(SnakeHeadRightImageProperty, value);
+        }
+
+        public ImageSource SnakeHeadDownImage
+        {
+            get => (ImageSource)GetValue(SnakeHeadDownImageProperty);
+            set => SetValue(SnakeHeadDownImageProperty, value);
+        }
+
+        public ImageSource SnakeHeadLeftImage
+        {
+            get => (ImageSource)GetValue(SnakeHeadLeftImageProperty);
+            set => SetValue(SnakeHeadLeftImageProperty, value);
+        }
+
         public ImageSource SnakeBodyImage
         {
             get => (ImageSource)GetValue(SnakeBodyImageProperty);
             set => SetValue(SnakeBodyImageProperty, value);
+        }
+
+        public ImageSource SnakeBodyUpImage
+        {
+            get => (ImageSource)GetValue(SnakeBodyUpImageProperty);
+            set => SetValue(SnakeBodyUpImageProperty, value);
+        }
+
+        public ImageSource SnakeBodyRightImage
+        {
+            get => (ImageSource)GetValue(SnakeBodyRightImageProperty);
+            set => SetValue(SnakeBodyRightImageProperty, value);
+        }
+
+        public ImageSource SnakeBodyDownImage
+        {
+            get => (ImageSource)GetValue(SnakeBodyDownImageProperty);
+            set => SetValue(SnakeBodyDownImageProperty, value);
+        }
+
+        public ImageSource SnakeBodyLeftImage
+        {
+            get => (ImageSource)GetValue(SnakeBodyLeftImageProperty);
+            set => SetValue(SnakeBodyLeftImageProperty, value);
         }
 
         public ImageSource CargoLowImage
@@ -358,10 +513,40 @@ namespace SnakeTimeKiller
             set => SetValue(BoardBackgroundBrushProperty, value);
         }
 
+        public ImageSource CellBackgroundImage
+        {
+            get => (ImageSource)GetValue(CellBackgroundImageProperty);
+            set => SetValue(CellBackgroundImageProperty, value);
+        }
+
         public Brush GridLineBrush
         {
             get => (Brush)GetValue(GridLineBrushProperty);
             set => SetValue(GridLineBrushProperty, value);
+        }
+
+        public double SnakeVisualScale
+        {
+            get => (double)GetValue(SnakeVisualScaleProperty);
+            set => SetValue(SnakeVisualScaleProperty, value);
+        }
+
+        public double HorizontalSegmentOverlap
+        {
+            get => (double)GetValue(HorizontalSegmentOverlapProperty);
+            set => SetValue(HorizontalSegmentOverlapProperty, value);
+        }
+
+        public double VerticalSegmentOverlap
+        {
+            get => (double)GetValue(VerticalSegmentOverlapProperty);
+            set => SetValue(VerticalSegmentOverlapProperty, value);
+        }
+
+        public double CargoVisualScale
+        {
+            get => (double)GetValue(CargoVisualScaleProperty);
+            set => SetValue(CargoVisualScaleProperty, value);
         }
 
         public int LowCargoScore
@@ -441,6 +626,33 @@ namespace SnakeTimeKiller
             return brush;
         }
 
+        private static ImageSource LoadEmbeddedImage(string resourceName)
+        {
+            try
+            {
+                var assembly = typeof(SnakeGameControl).Assembly;
+                using (var stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null)
+                    {
+                        return null;
+                    }
+
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.StreamSource = stream;
+                    image.EndInit();
+                    image.Freeze();
+                    return image;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static object CoerceGridSize(DependencyObject d, object baseValue)
         {
             var value = (int)baseValue;
@@ -461,6 +673,50 @@ namespace SnakeTimeKiller
         private static object CoerceNonNegativeInt(DependencyObject d, object baseValue)
         {
             return Math.Max(0, (int)baseValue);
+        }
+
+        private static object CoercePositiveScale(DependencyObject d, object baseValue)
+        {
+            var value = (double)baseValue;
+
+            if (double.IsNaN(value) || double.IsInfinity(value))
+            {
+                return 1.0;
+            }
+
+            if (value < 0.25)
+            {
+                return 0.25;
+            }
+
+            if (value > 3.0)
+            {
+                return 3.0;
+            }
+
+            return value;
+        }
+
+        private static object CoerceOverlap(DependencyObject d, object baseValue)
+        {
+            var value = (double)baseValue;
+
+            if (double.IsNaN(value) || double.IsInfinity(value))
+            {
+                return 0.0;
+            }
+
+            if (value < 0)
+            {
+                return 0.0;
+            }
+
+            if (value > 0.8)
+            {
+                return 0.8;
+            }
+
+            return value;
         }
 
         private static object CoerceTickInterval(DependencyObject d, object baseValue)
@@ -697,10 +953,11 @@ namespace SnakeTimeKiller
             _boardSurface.Columns = Columns;
             _boardSurface.CellSize = _cellSize;
             _boardSurface.BoardBackground = BoardBackgroundBrush ?? DefaultBoardBackgroundBrush;
+            _boardSurface.CellBackgroundImage = CellBackgroundImage ?? DefaultCellBackgroundImage;
             _boardSurface.GridLine = GridLineBrush ?? DefaultGridLineBrush;
             Canvas.SetLeft(_boardSurface, 0);
             Canvas.SetTop(_boardSurface, 0);
-            Panel.SetZIndex(_boardSurface, 0);
+            Panel.SetZIndex(_boardSurface, BoardLayer);
             _boardSurface.InvalidateVisual();
         }
 
@@ -727,22 +984,23 @@ namespace SnakeTimeKiller
             {
                 var isHead = i == 0;
                 var element = _snakeElements[i];
-                ApplySegmentSizing(element, isHead);
-                MoveElementToCell(element, snake[i], isHead ? 0.04 : 0.10, animate);
-                Panel.SetZIndex(element, isHead ? 3 : 2);
+                ApplySegmentVisual(element, i);
+                ApplySegmentSizing(element, i);
+                MoveElementToCell(element, snake[i], animate);
+                Panel.SetZIndex(element, GetVisualDepthZIndex(snake[i], element, snake.Count - i, SnakeDepthLayer));
             }
         }
 
         private FrameworkElement CreateSnakeElement(bool isHead)
         {
-            var source = isHead ? SnakeHeadImage : SnakeBodyImage;
+            var source = isHead ? GetSnakeHeadImage() : GetSnakeBodyImage(Direction.Right);
 
             if (source != null)
             {
                 return new Image
                 {
                     Source = source,
-                    Stretch = Stretch.Uniform,
+                    Stretch = Stretch.Fill,
                     RenderTransformOrigin = new Point(0.5, 0.5)
                 };
             }
@@ -758,18 +1016,126 @@ namespace SnakeTimeKiller
             };
         }
 
-        private void ApplySegmentSizing(FrameworkElement element, bool isHead)
+        private void ApplySegmentVisual(FrameworkElement element, int segmentIndex)
         {
-            var inset = _cellSize * (isHead ? 0.04 : 0.10);
-            var size = Math.Max(1, _cellSize - (inset * 2));
-
-            element.Width = size;
-            element.Height = size;
+            var isHead = segmentIndex == 0;
+            var image = element as Image;
+            if (image != null)
+            {
+                image.Source = isHead ? GetSnakeHeadImage() : GetSnakeBodyImage(GetBodyDirection(segmentIndex));
+                return;
+            }
 
             var border = element as Border;
             if (border != null)
             {
-                border.CornerRadius = new CornerRadius(Math.Max(2, size * (isHead ? 0.32 : 0.24)));
+                border.Background = isHead
+                    ? SnakeHeadBrush ?? DefaultSnakeHeadBrush
+                    : SnakeBodyBrush ?? DefaultSnakeBodyBrush;
+            }
+        }
+
+        private ImageSource GetSnakeHeadImage()
+        {
+            if (SnakeHeadImage != null)
+            {
+                return SnakeHeadImage;
+            }
+
+            var direction = _engine == null ? Direction.Right : _engine.CurrentDirection;
+            switch (direction)
+            {
+                case Direction.Up:
+                    return SnakeHeadUpImage ?? DefaultHeadUpImage;
+                case Direction.Right:
+                    return SnakeHeadRightImage ?? DefaultHeadRightImage;
+                case Direction.Down:
+                    return SnakeHeadDownImage ?? DefaultHeadDownImage;
+                case Direction.Left:
+                    return SnakeHeadLeftImage ?? DefaultHeadLeftImage;
+                default:
+                    return DefaultHeadRightImage;
+            }
+        }
+
+        private ImageSource GetSnakeBodyImage(Direction direction)
+        {
+            if (SnakeBodyImage != null)
+            {
+                return SnakeBodyImage;
+            }
+
+            switch (direction)
+            {
+                case Direction.Up:
+                    return SnakeBodyUpImage ?? DefaultBodyUpImage;
+                case Direction.Right:
+                    return SnakeBodyRightImage ?? DefaultBodyRightImage;
+                case Direction.Down:
+                    return SnakeBodyDownImage ?? DefaultBodyDownImage;
+                case Direction.Left:
+                    return SnakeBodyLeftImage ?? DefaultBodyLeftImage;
+                default:
+                    return DefaultBodyRightImage;
+            }
+        }
+
+        private Direction GetBodyDirection(int segmentIndex)
+        {
+            if (_engine == null || segmentIndex <= 0 || segmentIndex >= _engine.Snake.Count)
+            {
+                return Direction.Right;
+            }
+
+            var segment = _engine.Snake[segmentIndex];
+            var target = _engine.Snake[segmentIndex - 1];
+
+            if (target.Row < segment.Row)
+            {
+                return Direction.Up;
+            }
+
+            if (target.Row > segment.Row)
+            {
+                return Direction.Down;
+            }
+
+            if (target.Column < segment.Column)
+            {
+                return Direction.Left;
+            }
+
+            return Direction.Right;
+        }
+
+        private void ApplySegmentSizing(FrameworkElement element, int segmentIndex)
+        {
+            var isHead = segmentIndex == 0;
+            var width = _cellSize * 1.15 * SnakeVisualScale;
+            var height = width;
+
+            if (!isHead)
+            {
+                var direction = GetBodyDirection(segmentIndex);
+                if (direction == Direction.Up || direction == Direction.Down)
+                {
+                    width = _cellSize * 0.95 * SnakeVisualScale;
+                    height = _cellSize * (1 + VerticalSegmentOverlap) * SnakeVisualScale;
+                }
+                else
+                {
+                    width = _cellSize * (1 + HorizontalSegmentOverlap) * SnakeVisualScale;
+                    height = _cellSize * 0.95 * SnakeVisualScale;
+                }
+            }
+
+            element.Width = Math.Max(1, width);
+            element.Height = Math.Max(1, height);
+
+            var border = element as Border;
+            if (border != null)
+            {
+                border.CornerRadius = new CornerRadius(Math.Max(2, Math.Min(element.Width, element.Height) * (isHead ? 0.32 : 0.24)));
             }
         }
 
@@ -807,8 +1173,8 @@ namespace SnakeTimeKiller
             }
 
             ApplyCargoSizing(_cargoElement);
-            MoveElementToCell(_cargoElement, cargo.Position, 0.16, false);
-            Panel.SetZIndex(_cargoElement, 4);
+            MoveElementToCell(_cargoElement, cargo.Position, false);
+            Panel.SetZIndex(_cargoElement, GetVisualDepthZIndex(cargo.Position, _cargoElement, 0, CargoDepthLayer));
 
             var moved = !_lastCargoPosition.HasValue || !_lastCargoPosition.Value.Equals(cargo.Position);
             if (animate && (mustCreate || moved))
@@ -847,8 +1213,7 @@ namespace SnakeTimeKiller
 
         private void ApplyCargoSizing(FrameworkElement element)
         {
-            var inset = _cellSize * 0.16;
-            var size = Math.Max(1, _cellSize - (inset * 2));
+            var size = Math.Max(1, _cellSize * CargoVisualScale);
             element.Width = size;
             element.Height = size;
 
@@ -864,11 +1229,11 @@ namespace SnakeTimeKiller
             switch (type)
             {
                 case CargoType.Low:
-                    return CargoLowImage;
+                    return CargoLowImage ?? DefaultCargoLowImage;
                 case CargoType.Medium:
-                    return CargoMediumImage;
+                    return CargoMediumImage ?? DefaultCargoMediumImage;
                 case CargoType.High:
-                    return CargoHighImage;
+                    return CargoHighImage ?? DefaultCargoHighImage;
                 default:
                     return null;
             }
@@ -889,11 +1254,12 @@ namespace SnakeTimeKiller
             }
         }
 
-        private void MoveElementToCell(FrameworkElement element, GridPosition position, double insetFactor, bool animate)
+        private void MoveElementToCell(FrameworkElement element, GridPosition position, bool animate)
         {
-            var inset = _cellSize * insetFactor;
-            var targetLeft = (position.Column * _cellSize) + inset;
-            var targetTop = (position.Row * _cellSize) + inset;
+            var cellCenterX = (position.Column * _cellSize) + (_cellSize / 2);
+            var cellCenterY = (position.Row * _cellSize) + (_cellSize / 2);
+            var targetLeft = cellCenterX - (element.Width / 2);
+            var targetTop = cellCenterY - (element.Height / 2);
 
             if (!animate || double.IsNaN(Canvas.GetLeft(element)) || double.IsNaN(Canvas.GetTop(element)))
             {
@@ -948,7 +1314,7 @@ namespace SnakeTimeKiller
 
             Canvas.SetLeft(pop, (cargo.Position.Column * _cellSize) + ((_cellSize - size) / 2));
             Canvas.SetTop(pop, (cargo.Position.Row * _cellSize) + ((_cellSize - size) / 2));
-            Panel.SetZIndex(pop, 5);
+            Panel.SetZIndex(pop, GetVisualDepthZIndex(cargo.Position, pop, PopDepthLayerOffset, CargoDepthLayer));
             _boardCanvas.Children.Add(pop);
 
             var duration = TimeSpan.FromMilliseconds(220);
@@ -963,6 +1329,17 @@ namespace SnakeTimeKiller
             scale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
             scale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
             pop.BeginAnimation(UIElement.OpacityProperty, fadeAnimation);
+        }
+
+        private double GetCellCenterY(GridPosition position)
+        {
+            return (position.Row * _cellSize) + (_cellSize / 2);
+        }
+
+        private int GetVisualDepthZIndex(GridPosition position, FrameworkElement element, int tieBreaker, int baseLayer)
+        {
+            var visualBottom = GetCellCenterY(position) + (element.Height / 2);
+            return baseLayer + (int)Math.Round(visualBottom * 10) + tieBreaker;
         }
 
         private static ScaleTransform EnsureScaleTransform(FrameworkElement element)
@@ -1016,6 +1393,8 @@ namespace SnakeTimeKiller
 
             public Brush BoardBackground { get; set; }
 
+            public ImageSource CellBackgroundImage { get; set; }
+
             public Brush GridLine { get; set; }
 
             protected override void OnRender(DrawingContext drawingContext)
@@ -1028,6 +1407,19 @@ namespace SnakeTimeKiller
                 if (Rows <= 0 || Columns <= 0 || CellSize <= 0)
                 {
                     return;
+                }
+
+                if (CellBackgroundImage != null)
+                {
+                    for (var row = 0; row < Rows; row++)
+                    {
+                        for (var column = 0; column < Columns; column++)
+                        {
+                            drawingContext.DrawImage(
+                                CellBackgroundImage,
+                                new Rect(column * CellSize, row * CellSize, CellSize, CellSize));
+                        }
+                    }
                 }
 
                 var pen = new Pen(GridLine ?? DefaultGridLineBrush, 1);
